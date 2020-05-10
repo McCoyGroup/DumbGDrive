@@ -5,11 +5,11 @@ FROM ubuntu:eoan-20200410
 ADD . /home/DumbGDrive
 
 RUN \
-  apt-get -y install python3-devel  &&\
-  apt-get -y install python3-pip &&
+  apt-get update &&\
+  apt-get -y install python3.7 python3-pip &&\
   apt-get clean
 
 RUN \
   pip3 install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
-ENTRYPOINT ['python3', '/home/DumbGDrive/CLI.py']
+ENTRYPOINT ["python3", "/home/DumbGDrive/CLI.py"]

@@ -127,7 +127,9 @@ class CLI:
              sys.path.insert(0, os.getcwd())
              interactive_env = {
                  "__name__": "DumbGDrive.script",
-                 'FilesService': FilesService()
+                 'Service': Service,
+                 'Credentials': Credentials,
+                 'Files': FilesService
                 }
         # in a script environment we just read in the script and run it
         if parse.script:

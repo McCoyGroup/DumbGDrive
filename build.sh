@@ -11,15 +11,17 @@ else
 fi
 
 if [[ "$build_type" = "" ]]; then
-  build_type="docker";
+  build_type="build";
 fi
 
 IMAGE_NAME=dumbgdrive
-DOCKER_IMAGE_NAME=b3m2a1/dumbgdrive
-if [[ "$build_type" = "docker" ]]; then
-  docker build -t IMAGE_NAME -f $PACKAGE_PATH/Dockerfile $PACKAGE_PATH
-  if [[ "$push" == "--push" ]]; then
-    docker tag IMAGE_NAME DOCKER_IMAGE_NAME
-    docker push DOCKER_IMAGE_NAME
-  fi
+DOCKER_IMAGE_NAME=mccoygroup/dumbgdrive
+if [[ "$build_type" = "update" ]]; then
+  docker build -t $IMAGE_NAME -f $PACKAGE_PATH/DockerfileUpdate $PACKAGE_PATH
+else
+  docker build -t $IMAGE_NAME -f $PACKAGE_PATH/Dockerfile $PACKAGE_PATH
+fi
+if [[ "$push" == "--push" ]]; then
+  docker tag $IMAGE_NAME $DOCKER_IMAGE_NAME
+  docker push $DOCKER_IMAGE_NAME
 fi

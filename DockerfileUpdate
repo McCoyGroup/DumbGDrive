@@ -1,0 +1,3 @@
+FROM dumbgdrive
+
+ADD . /home/DumbGDrive
