@@ -9,13 +9,14 @@ I use the Google Client Library for Python and install that in a container envir
 
 ## Getting Started
 
-To install on Mox, use Singularity to pull it in the directory you want to install to and use my Client ID file for authorization
+To install on Mox, use Singularity to pull it in the directory you want to install to. 
+If you want to use my Client ID file for authorization, feel free. Otherwise it's really easy to get your own. My credentials only work for `...@uw.edu` accounts.
 
 ```shell script
 module load singularity
 singularity pull dumbgdrive docker://mccoygroup/dumbgdrive:latest
 mkdir -p gdrive
-cp /gscratch/stf/b3m2a1/client_id.json ./gdrive/
+cp /usr/lusers/b3m2a1/client_id.json ./gdrive/
 ```
 
 You can then run it in interactive mode
