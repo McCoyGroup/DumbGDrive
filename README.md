@@ -7,6 +7,8 @@ go through the effort.
 
 I use the Google Client Library for Python and install that in a container environment. 
 
+## Getting Started
+
 To install on Mox, use Singularity to pull it in the directory you want to install to and use my Client ID file for authorization
 
 ```shell script
@@ -34,4 +36,12 @@ or in script mode
 
 everything needs to be relative to `$PWD`, though, or else you'll need to pass other args to Singularity
 
+## Writing Scripts
 
+Rather than document how to do things, [here's a link to Google's own documentation](https://developers.google.com/drive/api/v3/about-files)
+
+Anything you want to do can be done from there, first probably by building a `Service` object or using the `Files` one I provide. 
+Look at the source to see how the `list` method is written and compare that to what's [here](https://developers.google.com/drive/api/v3/quickstart/python).
+
+If you have a script you want to add as a method to the `Files` service, feel free to add it and submit a PR. 
+I'm not taking requests for extensions at this moment, though.
