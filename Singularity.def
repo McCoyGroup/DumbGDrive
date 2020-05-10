@@ -1,0 +1,17 @@
+
+BootStrap: docker
+From: ubuntu:eoan-20200410
+
+# we assume we build from _outside_ this directory?
+%files
+    DumbGDrive /home/DumbGDrive
+
+%post
+  apt-get -y install python3-devel  &&\
+  apt-get -y install python3-pip &&
+  apt-get clean
+
+  pip3 install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
+%runscript
+    exec python3 /home/DumbGDrive/CLI.py $@
