@@ -32,7 +32,7 @@ You can then run it in interactive mode
 or in script mode
 
 ```shell script
-./dumbgdrive --script=<path_to_script>.py
+./dumbgdrive --script <path_to_script>.py <script_args>
 ```
 
 everything needs to be relative to `$PWD`, though, or else you'll need to pass other args to Singularity
@@ -44,5 +44,19 @@ Rather than document how to do things, [here's a link to Google's own documentat
 Anything you want to do can be done from there, first probably by building a `Service` object or using the `Files` one I provide. 
 Look at the source to see how the `list` method is written and compare that to what's [here](https://developers.google.com/drive/api/v3/quickstart/python).
 
-If you have a script you want to add as a method to the `Files` service, feel free to add it and submit a PR. 
+If you have a script you want to add as a method to a service, feel free to add it and submit a PR. 
+If you want to contribute a default script to put in the `scripts`, folder, that's cool too.
 I'm not taking requests for extensions at this moment, though.
+
+The scripts in the scripts can serve as good examples, e.g.
+
+```shell script
+dumbgdrive --script find_files.py --pageSize=1
+# {'id': '1IODSf2B4Gd-uaec8dBQemDx_H2b_aGy5JyjS-XHefVY', 'name': 'Chem 162 Online Resource Collection'}
+```
+
+## Extensions
+
+One thing that would be really nice to have is higher-level interfaces, i.e. things like a `File` class or `Drive` class which can be returned by things like `FilesService.list()` and which can do stuff like `file.download(<path>)` or be returned by a `File.upload(file)` classmethod constructor.
+
+If anyone wants to write this, I'd appreciate it. 

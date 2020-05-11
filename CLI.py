@@ -26,23 +26,28 @@ class CLI:
             self.group = group
             self.cmd = command
 
-    def get_parse_dict(self, *spec):
-        sys.argv[0] = self.group + " " + self.cmd
-        parser = argparse.ArgumentParser()
-        keys = []
-        for arg in spec:
-            if len(arg) > 1:
-                arg_name, arg_dict = arg
-            else:
-                arg_name = arg[0]
-                arg_dict = {}
-            if 'dest' in arg_dict:
-                keys.append(arg_dict['dest'])
-            else:
-                keys.append(arg_name)
-            parser.add_argument(arg_name, **arg_dict)
-        args = parser.parse_args()
-        opts = {k: getattr(args, k) for k in keys}
+    @staticmethod
+    def get_parse_dict(*spec):
+        argv_0 = sys.argv[0]
+        try:
+            sys.argv[0] = "parsing_dict" #self.group + " " + self.cmd
+            parser = argparse.ArgumentParser()
+            keys = []
+            for arg in spec:
+                if len(arg) > 1:
+                    arg_name, arg_dict = arg
+                else:
+                    arg_name = arg[0]
+                    arg_dict = {}
+                if 'dest' in arg_dict:
+                    keys.append(arg_dict['dest'])
+                else:
+                    keys.append(arg_name)
+                parser.add_argument(arg_name, **arg_dict)
+            args = parser.parse_args()
+            opts = {k: getattr(args, k) for k in keys}
+        finally:
+            sys.argv[0] = argv_0
         return {k:o for k,o in opts.items() if not (isinstance(o, str) and o=="")}
 
     def get_command(self, group=None, cmd=None):
@@ -127,19 +132,32 @@ class CLI:
              sys.path.insert(0, os.getcwd())
              interactive_env = {
                  "__name__": "DumbGDrive.script",
+                 'CLI': CLI,
                  'Service': Service,
                  'Credentials': Credentials,
-                 'Files': FilesService
+                 'Files': FilesService,
+                 'Drive': DriveService,
+                 'About': AboutService,
+                 'Children': ChildrenService,
+                 'Parents': ParentsService,
+                 'Comments': CommentsService,
+                 'Downloader': Downloader
                 }
         # in a script environment we just read in the script and run it
         if parse.script:
-            with open(parse.script) as script:
-                src = script.read()
-            interactive_env["__file__"] = parse.script
+            script = sys.argv[1]
+            sys.argv.pop(0)
+            interactive_env["__name__"] = "DumbGDrive.scripts." + os.path.splitext(os.path.basename(script))[0]
+            if not os.path.exists(script):
+                script = os.path.join(os.path.dirname(__file__), 'scripts', script)
+            with open(script) as scr:
+                src = scr.read()
+                src = compile(src, script, 'exec')
+            interactive_env["__file__"] = script
             exec(src, interactive_env, interactive_env)
         elif parse.help:
             if len(sys.argv) == 1:
-                print("dumbgdrive [--interact|--script] GRP CMD [ARGS] runs the DumbGDrive with the specified command")
+                print("dumbgdrive [--interact|--script] GRP CMD [ARGS] runs DumbGDrive with the specified command")
             group = sys.argv[1] if len(sys.argv) > 1 else ""
             command = sys.argv[2] if len(sys.argv) > 2 else ""
             CLI(group=group, command=command).help()
@@ -158,11 +176,11 @@ class CLI:
     @classmethod
     def parse_and_run(cls):
         parser = argparse.ArgumentParser(add_help=False)
-        parser.add_argument("--script", default="", type=str, dest="script",
-                            help='a script to run'
-                            )
-        parser.add_argument("--interact", default=True, action='store_const', const=True, dest="interact",
+        parser.add_argument("--interact", default=False, action='store_const', const=True, dest="interact",
                             help='start an interactive session after running'
+                            )
+        parser.add_argument("--script", default=False, action='store_const', const=True, dest="script",
+                            help='run a script'
                             )
         parser.add_argument("--help", default=False, action='store_const', const=True, dest="help")
         parser.add_argument("--fulltb", default=False, action='store_const', const=True, dest="full_traceback")
