@@ -83,17 +83,27 @@ class Uploader:
         if self.mimeType is not None:
             upops['mimetype'] = self.mimeType
         media = MediaFileUpload(self.fp, **upops)
-        req = self.service.create(body=self.opts, media_body=media, fields=fields, supportsAllDrives=True)
+        req = self.service.create(body=self.opts,
+                                  media_body=media,
+                                  fields=fields,
+                                  supportsAllDrives=True
+                                  )
         if isinstance(req, dict):
             return req
         else:
             return req.execute()
-
 class GDObject:
     _cache = {}
-    def __init__(self, name=None, id=None, **props):
+    def __init__(self, name=None, id=None, parent=None, drive=None, **props):
         self.name = name
         self.id = id
+        if parent is not None:
+            if 'parents' not in props:
+                props['parents'] = [parent.id]
+            else:
+                props['parents'] = list(props['parents']) + [parent.id]
+        if drive is not None:
+            props['driveId'] = drive.id
         self.props = props
     def __repr__(self):
         return "{}(name='{}', id={})".format(type(self).__name__, self.name, self.id)
@@ -162,11 +172,11 @@ class File(GDObject):
     @classmethod
     def upload(cls, path, parent = None, drive=None, **params):
         if parent is not None and 'parents' not in params:
-            params['parents'] = [parent.id]
+            params['parents'] = [ parent.id ]
         if drive is not None:
             params['driveId'] = drive.id
         up = Uploader(path, **params).upload()
-        return cls.load(**up, path=path)
+        return cls.load(**up, drive=drive, parent=parent, path=path)
     def download(self, parent=None):
         if parent is None:
             parent=os.getcwd()
@@ -197,7 +207,7 @@ class File(GDObject):
                 self._drive = Drive.load(id=self.props['driveId'])
         return self._drive
     @classmethod
-    def search(cls, fields="files(name,id,parents,mimeType)", **params):
+    def search(cls, fields="files(name,id,parents,driveId,mimeType)", **params):
         return [cls.load(**f) for f in cls._api().list(fields=fields, **params)]
 class Folder(File):
     _api = GDObject.FilesAPI
@@ -223,7 +233,7 @@ class Folder(File):
             metadata['driveId'] = drive.id
         ret = cls.FilesAPI().create(
             body=metadata,
-            fields='name,id'
+            fields='name,id,parents,driveId'
         )
         return cls.load(**ret)
     @classmethod

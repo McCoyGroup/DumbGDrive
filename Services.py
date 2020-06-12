@@ -55,12 +55,10 @@ class FilesService(Service):
         ).execute()
         return results.get('files', [])
     def create(self,
-             includeItemsFromAllDrives=True,
              supportsAllDrives=True,
              **params
              ):
         results = self.caller.create(
-            includeItemsFromAllDrives=includeItemsFromAllDrives,
             supportsAllDrives=supportsAllDrives,
             **params
         ).execute()
