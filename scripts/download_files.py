@@ -4,7 +4,7 @@ A script to list files, pulled from: https://developers.google.com/drive/api/v3/
 """
 from ..CLI import CLI
 from ..Services import FilesService as Files
-from ..Request import Downloader
+from ..Utilities import Downloader
 
 params = CLI.get_parse_dict(
     (

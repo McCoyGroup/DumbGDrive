@@ -6,6 +6,7 @@ import sys, os, argparse
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from DumbGDrive import *
+import DumbGDrive.Utilities as Utilities
 
 class CLI:
 
@@ -141,7 +142,7 @@ class CLI:
                  'Children': ChildrenService,
                  'Parents': ParentsService,
                  'Comments': CommentsService,
-                 'Downloader': Downloader
+                 'Utilities': Utilities
                 }
         # in a script environment we just read in the script and run it
         if parse.script:

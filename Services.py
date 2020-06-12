@@ -43,11 +43,28 @@ class FilesService(Service):
     def __init__(self, creds = None, api = None, **params):
         super().__init__('files', cred=creds, api=api, **params)
 
-    def list(self, **params):
+    def list(self,
+             includeItemsFromAllDrives=True,
+             supportsAllDrives=True,
+             **params
+             ):
         results = self.caller.list(
+            includeItemsFromAllDrives=includeItemsFromAllDrives,
+            supportsAllDrives=supportsAllDrives,
             **params
         ).execute()
         return results.get('files', [])
+    def create(self,
+             includeItemsFromAllDrives=True,
+             supportsAllDrives=True,
+             **params
+             ):
+        results = self.caller.create(
+            includeItemsFromAllDrives=includeItemsFromAllDrives,
+            supportsAllDrives=supportsAllDrives,
+            **params
+        ).execute()
+        return results
 
 class DriveService(Service):
     def __init__(self, creds = None, api = None, **params):

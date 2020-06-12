@@ -64,6 +64,13 @@ params = CLI.get_parse_dict(
             default=True, action='store_const', const=True, dest='supportsAllDrives',
             help="Deprecated - Whether the requesting application supports both My Drives and shared drives. This parameter will only be effective until June 1, 2020. Afterwards all applications are assumed to support shared drives."
         )
+    ),
+    (
+        '--includeItemsFromAllDrives',
+        dict(
+            default=True, action='store_const', const=True, dest='includeItemsFromAllDrives',
+            help="Deprecated - Whether to include files from all drives"
+        )
     )
 )
 files_api = Files() #

@@ -54,6 +54,9 @@ class Credentials:
             elif self.mode == 'service_account':
                 creds = service_account.Credentials.from_service_account_file(self.creds_file, scopes=self.scope_list)
             else:
+                if not os.path.exists(self.creds_file):
+                    with open(self.creds_file, 'w+') as touch:
+                        pass
                 flow = InstalledAppFlow.from_client_secrets_file(self.creds_file, self.scope_list)
                 creds = flow.run_console(port=0)
                 # Save the credentials for the next run
